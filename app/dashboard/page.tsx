@@ -13,14 +13,14 @@ import { getPrefs } from "@/lib/store";
 import { formatAddress, formatTokenAmount } from "@/lib/format";
 import { fetchUserHistory, VaultHistoryItem } from "@/lib/yo";
 import { useDemo } from "@/context/DemoContext";
-import { DEMO_ADDRESS, DEMO_VAULT_SHARES, DEMO_HISTORY, DEMO_GOAL } from "@/lib/demo";
+import { DEMO_ADDRESS, DEMO_GOAL } from "@/lib/demo";
 import { SavingsChart } from "@/components/SavingsChart";
 import { RoundUpChart } from "@/components/RoundUpChart";
 
 export default function DashboardPage() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
-  const { isDemo } = useDemo();
+  const { isDemo, demoBalance: demoBal, demoHistory } = useDemo();
 
   const [goals, setGoals] = useState<Goal[]>([]);
   const [prefs, setPrefs] = useState(getPrefs());
@@ -42,10 +42,9 @@ export default function DashboardPage() {
   // Balance
   const realBalance = position?.assets ? formatTokenAmount(position.assets, vault.decimals) : "0.00";
   const realShares = position?.shares ? formatTokenAmount(position.shares, vault.decimals) : "0.00";
-  const demoBalance = (Number(DEMO_VAULT_SHARES) / 1e6).toFixed(2);
 
-  const balance = isDemo ? demoBalance : realBalance;
-  const shares = isDemo ? formatTokenAmount(DEMO_VAULT_SHARES, 6) : realShares;
+  const balance = isDemo ? (demoBal / 1e6).toFixed(2) : realBalance;
+  const shares = isDemo ? (demoBal / 1e6).toFixed(4) : realShares;
 
   useEffect(() => {
     setGoals(getGoals());
@@ -54,7 +53,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (isDemo) {
-      setHistory(DEMO_HISTORY);
+      setHistory(demoHistory);
       return;
     }
     if (!address) return;
@@ -64,7 +63,7 @@ export default function DashboardPage() {
       const arr = Array.isArray(items) ? items : [];
       setHistory(arr.slice(0, 5));
     });
-  }, [address, chainId, vault.address, isDemo]);
+  }, [address, chainId, vault.address, isDemo, demoHistory]);
 
   const activeGoal = isDemo
     ? DEMO_GOAL
@@ -178,9 +177,9 @@ export default function DashboardPage() {
                       : "—"}
                   </p>
                 </div>
-                <p className="shrink-0 text-sm font-semibold tabular-nums text-indigo-300">
+                <p className={`shrink-0 text-sm font-semibold tabular-nums ${tx.type === "withdraw" ? "text-red-400" : "text-indigo-300"}`}>
                   {tx.assets
-                    ? `${(Number(tx.assets) / 10 ** vault.decimals).toFixed(2)} ${vault.asset}`
+                    ? `${tx.type === "withdraw" ? "−" : "+"}$${(Number(tx.assets) / 10 ** vault.decimals).toFixed(2)}`
                     : "—"}
                 </p>
               </div>

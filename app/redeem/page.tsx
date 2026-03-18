@@ -12,11 +12,9 @@ import { getPrefs } from "@/lib/store";
 import { formatTokenAmount, toTokenUnits } from "@/lib/format";
 import { useDemo } from "@/context/DemoContext";
 import { useMockRedeem } from "@/hooks/useMockDeposit";
-import { DEMO_VAULT_SHARES } from "@/lib/demo";
-
 export default function RedeemPage() {
   const { isConnected } = useAccount();
-  const { isDemo } = useDemo();
+  const { isDemo, demoBalance, addDemoWithdraw } = useDemo();
   const effectiveConnected = isDemo || isConnected;
 
   const prefs = getPrefs();
@@ -29,7 +27,7 @@ export default function RedeemPage() {
 
   const { position } = useUserPosition(vault.id);
   const realTotalShares = position?.shares ?? 0n;
-  const totalShares = isDemo ? DEMO_VAULT_SHARES : realTotalShares;
+  const totalShares = isDemo ? BigInt(demoBalance) : realTotalShares;
 
   const sharesToRedeem =
     mode === "percent"
@@ -51,6 +49,7 @@ export default function RedeemPage() {
     if (sharesToRedeem <= 0n) return;
     if (isDemo) {
       await mockRedeem.redeem();
+      addDemoWithdraw(Number(sharesToRedeem));
     } else {
       await realRedeem.redeem(sharesToRedeem);
     }

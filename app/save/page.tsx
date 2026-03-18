@@ -72,6 +72,8 @@ export default function SavePage() {
     setGoals(getGoals());
   }, []);
 
+  const { addDemoDeposit } = useDemo();
+
   async function handleDeposit() {
     if (depositAmount <= 0) return;
     if (isDemo) {
@@ -83,8 +85,9 @@ export default function SavePage() {
   }
 
   useEffect(() => {
-    if (isSuccess && selectedGoalId) {
-      updateGoalProgress(selectedGoalId, depositAmount);
+    if (isSuccess) {
+      if (selectedGoalId) updateGoalProgress(selectedGoalId, depositAmount);
+      if (isDemo) addDemoDeposit(depositAmount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
