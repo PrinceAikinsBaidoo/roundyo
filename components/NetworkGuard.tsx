@@ -17,7 +17,7 @@ export function NetworkGuard() {
   return (
     <div className="flex items-center justify-between gap-4 bg-amber-500/10 px-4 py-2.5 text-sm border-b border-amber-500/20">
       <p className="text-amber-300">
-        ⚠️ RoundYO runs on <strong>Base</strong>, <strong>Ethereum</strong>, and <strong>Arbitrum</strong>. You&apos;re on an unsupported network.
+        ⚠️ RoundYO works on <strong>Base</strong>, <strong>Ethereum</strong>, and <strong>Arbitrum</strong>. Your wallet is on a different network.
       </p>
       <button
         onClick={() => switchChain({ chainId: base.id })}

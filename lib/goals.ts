@@ -81,4 +81,17 @@ export function getGoalProgress(goal: Goal): number {
   );
 }
 
+/** Backfill ownerAddress on goals that were created before this field existed. */
+export function migrateGoalsOwner(address: string): void {
+  const goals = getGoals();
+  let changed = false;
+  for (const g of goals) {
+    if (!g.ownerAddress) {
+      g.ownerAddress = address;
+      changed = true;
+    }
+  }
+  if (changed) saveGoals(goals);
+}
+
 export const GOAL_EMOJIS = ["🏠", "✈️", "🎓", "🚗", "💍", "🌴", "💻", "🎯", "🛟", "🐣"];

@@ -57,7 +57,7 @@ function SharedGoalContent() {
         <span className="text-5xl">{goal.emoji}</span>
         <div>
           <h1 className="text-2xl font-bold text-white">{goal.name}</h1>
-          <p className="text-sm text-gray-400">Saving in {vault.name} vault · {vault.asset}</p>
+          <p className="text-sm text-gray-400">Saving with {vault.name} · {vault.asset}</p>
         </div>
       </div>
 

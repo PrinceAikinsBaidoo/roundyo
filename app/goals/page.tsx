@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { GoalCard } from "@/components/GoalCard";
-import { Goal, getGoals, createGoal, GOAL_EMOJIS } from "@/lib/goals";
+import { Goal, getGoals, createGoal, migrateGoalsOwner, GOAL_EMOJIS } from "@/lib/goals";
 import { getPrefs, savePrefs } from "@/lib/store";
 import { useAccount } from "wagmi";
 
@@ -17,9 +17,10 @@ export default function GoalsPage() {
   const [emoji, setEmoji] = useState("🎯");
 
   useEffect(() => {
+    if (address) migrateGoalsOwner(address);
     setGoals(getGoals());
     setPrefs(getPrefs());
-  }, []);
+  }, [address]);
 
   function handleCreate() {
     if (!name || !target) return;

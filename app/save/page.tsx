@@ -108,7 +108,7 @@ export default function SavePage() {
     <div className="mx-auto max-w-xl px-4 py-10">
       <h1 className="mb-1 text-2xl font-bold text-white">Save</h1>
       <p className="mb-8 text-sm text-gray-400">
-        Round up a purchase or enter a custom amount to deposit into your YO vault.
+        Round up a purchase or enter a custom amount to save.
       </p>
 
       {/* Mode toggle */}
@@ -204,7 +204,7 @@ export default function SavePage() {
           </div>
           {!isDemo && previewShares !== undefined && (
             <div className="mt-2 flex items-center justify-between">
-              <p className="text-xs text-gray-500">Est. vault shares</p>
+              <p className="text-xs text-gray-500">You&apos;ll receive</p>
               <p className="text-xs text-gray-300">
                 {formatTokenAmount(previewShares, vault.decimals)} {vault.name}
               </p>
@@ -212,7 +212,7 @@ export default function SavePage() {
           )}
           {isDemo && (
             <div className="mt-2 flex items-center justify-between">
-              <p className="text-xs text-gray-500">Est. vault shares</p>
+              <p className="text-xs text-gray-500">You&apos;ll receive</p>
               <p className="text-xs text-gray-300">
                 ~{depositAmount.toFixed(4)} {vault.name}
               </p>
@@ -231,7 +231,7 @@ export default function SavePage() {
       {goals.length > 0 && (
         <div className="mb-6">
           <label className="mb-2 block text-sm text-gray-400">
-            Apply to goal (optional)
+            Assign to a savings goal (optional)
           </label>
           <select
             value={selectedGoalId}
@@ -282,7 +282,7 @@ export default function SavePage() {
         />
         {isDemo && isSuccess && (
           <div className="mt-2 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-            ✓ Demo deposit successful! In production this would be onchain on Base.
+            ✓ Demo deposit successful! In production this saves to the blockchain.
           </div>
         )}
       </div>

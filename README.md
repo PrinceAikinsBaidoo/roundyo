@@ -1,8 +1,8 @@
-# RoundYO — Turn spare change into onchain yield
+# RoundYO — Turn spare change into real savings
 
 > **Live demo:** https://roundyo.vercel.app
 
-RoundYO is a micro-savings app built on [YO Protocol](https://yo.xyz). Every time you make a purchase, it rounds up the amount to the nearest $1, $5, or $10 and deposits the spare change directly into a live YO yield vault on Base — earning real DeFi APY while you spend.
+RoundYO is a micro-savings app built on [YO Protocol](https://yo.xyz). Every time you make a purchase, it rounds up the amount to the nearest $1, $5, or $10 and saves the difference — your money earns interest automatically while you spend.
 
 ---
 
@@ -10,20 +10,20 @@ RoundYO is a micro-savings app built on [YO Protocol](https://yo.xyz). Every tim
 
 | Feature | Detail |
 |---|---|
-| **Round-up deposits** | Enter a purchase amount → RoundYO calculates the round-up → one-click deposit into a YO vault |
-| **Multiple vaults** | yoUSD (USDC), yoETH (WETH), yoBTC (cbBTC), yoEUR (EURC) |
+| **Round-up savings** | Enter a purchase amount → RoundYO calculates the round-up → one-click deposit |
+| **Multiple accounts** | yoUSD (USDC), yoETH (WETH), yoBTC (cbBTC), yoEUR (EURC) |
 | **Goal tracking** | Create savings goals (emergency fund, travel, etc.) and watch deposits fill your progress bar |
-| **Social goals** | Share a goal link — friends can contribute directly to your vault position |
-| **Withdraw anytime** | Redeem vault shares back to the underlying asset — instantly or queued within 24h |
-| **Live APY** | 30-day APY and TVL pulled live from the YO Protocol SDK |
-| **Multi-chain** | Base, Ethereum, Arbitrum — correct asset address resolved per connected chain |
-| **Try Demo** | Full walletless demo mode — no funds needed, judges can explore every flow |
+| **Social goals** | Share a goal link — friends can chip in with any asset they have |
+| **Withdraw anytime** | Get your money back instantly or within 24 hours |
+| **Live rates** | Real-time annual returns and total deposits from YO Protocol |
+| **Multi-chain** | Base, Ethereum, Arbitrum — we handle the rest |
+| **Try Demo** | Full walletless demo mode — no funds needed, explore every flow |
 
 ---
 
 ## YO Protocol integration
 
-RoundYO uses the YO SDK for all vault interactions:
+RoundYO uses the YO SDK for all savings interactions:
 
 ```
 @yo-protocol/core   — vault addresses, chain constants
@@ -33,15 +33,16 @@ RoundYO uses the YO SDK for all vault interactions:
 
 Key integration points:
 - `useDeposit()` — approve + deposit with `chainId` routing, step-by-step UI feedback
-- `useRedeem()` — redeem shares back to assets with instant/queued detection
-- `useVaults()` — live APY and TVL for all vaults
-- `useUserPosition()` — user's current shares and asset value per vault
-- `getVaultsForChain()` — resolve correct asset address per connected chain at runtime
-- `fetchUserHistory()` — per-user deposit/redeem history via YO REST API
+- `useRedeem()` — withdraw savings with instant/queued detection
+- `useVaults()` — live rates and total deposits for all accounts
+- `useUserPosition()` — user's current balance per account
+- `getAssetAddress()` — resolve correct asset address per connected chain at runtime
+- `fetchUserHistory()` — per-user deposit/withdrawal history via YO REST API
+- **ERC-4626 `deposit(amount, receiver)`** — enables friend contributions to goal owner's account
 
 **Chains:** Base · Ethereum · Arbitrum
 
-All transactions go directly to YO vault contracts — no custody, no proxy.
+All transactions go directly to YO Protocol contracts — no custody, no proxy.
 
 ---
 
@@ -79,10 +80,10 @@ Open [http://localhost:3000](http://localhost:3000).
 No wallet or funds needed:
 
 1. Click **"Try Demo"** on the homepage
-2. Explore the dashboard — $47.23 balance, active goal, 5 deposit history entries, live vault APY
-3. Go to **Save** → enter a purchase amount → click Deposit → watch the transaction flow
-4. Go to **Withdraw** → pick a percentage → simulate redemption
-5. Click **"DEMO · Exit"** in the navbar to return to the real app
+2. Explore the dashboard — $47.23 balance, active goal, deposit history, live rates
+3. Go to **Save** → enter a purchase amount → click Deposit → watch the flow
+4. Go to **Withdraw** → pick a percentage → simulate withdrawal
+5. Click **"DEMO · Exit"** in the navbar to return
 
 ---
 
@@ -92,23 +93,26 @@ No wallet or funds needed:
 app/
   page.tsx          — Landing page + Try Demo CTA
   setup/            — 5-step onboarding wizard
-  dashboard/        — Balance, active goal, vault stats, activity
+  dashboard/        — Balance, active goal, rates, activity
   save/             — Round-up calculator + deposit flow
-  redeem/           — Vault share redemption
-  goals/            — Goal creation and tracking
+  redeem/           — Withdrawal page
+  goals/            — Goal creation, tracking, sharing
+  goals/shared/     — Public shared goal page + contribute
 
 lib/
-  config.ts         — Wagmi config, vault registry, asset addresses
+  config.ts         — Wagmi config, account registry, per-chain asset addresses
   yo.ts             — YO REST API wrappers
-  goals.ts          — Goal CRUD (localStorage)
+  goals.ts          — Goal CRUD + migration (localStorage)
   store.ts          — User preferences (localStorage)
   demo.ts           — Demo mode mock data
 
 components/
-  VaultInfoCard     — Live APY, TVL, risk badge per vault
-  SavingsSummary    — User balance, shares, APY summary strip
-  TransactionStatus — Step-by-step tx progress with Basescan links
-  NetworkGuard      — Auto-prompt to switch to Base
+  ContributeSection — Multi-asset contribution with chain switching
+  ShareGoalModal    — Share via X, Telegram, WhatsApp, Warpcast + copy link
+  VaultInfoCard     — Live rates, total deposits, risk badge
+  SavingsSummary    — User balance + annual return strip
+  TransactionStatus — Step-by-step progress with block explorer links
+  NetworkGuard      — Auto-prompt to switch to supported chain
   GoalCard          — Goal progress bar card
 ```
 

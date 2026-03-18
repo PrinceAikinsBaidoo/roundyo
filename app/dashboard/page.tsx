@@ -88,17 +88,17 @@ export default function DashboardPage() {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
-              {isDemo ? "Demo Balance" : "Total Saved"}
+              {isDemo ? "Demo Balance" : "Total Savings"}
             </p>
             <p className="mt-1 text-4xl font-black tabular-nums text-white sm:text-5xl">
               ${balance}
             </p>
             <p className="mt-1 text-sm text-gray-400">
-              {shares} {vault.name} shares
+              {shares} in {vault.name}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-gray-500">30d APY</p>
+            <p className="text-xs text-gray-500">Annual return</p>
             <p className="text-2xl font-bold text-green-400">{apy}</p>
             <p className="mt-0.5 text-xs text-gray-500">{vault.asset} · {vault.name}</p>
           </div>

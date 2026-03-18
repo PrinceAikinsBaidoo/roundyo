@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useVaults } from "@yo-protocol/react";
 import { useDemo } from "@/context/DemoContext";
 
-function VaultStatsStrip() {
+function LiveRatesStrip() {
   const { vaults } = useVaults();
 
   const items = ["yoUSD", "yoETH", "yoBTC", "yoEUR"].map((id) => {
@@ -20,6 +20,9 @@ function VaultStatsStrip() {
 
   return (
     <div className="mx-auto mb-16 max-w-5xl px-4">
+      <p className="mb-4 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+        Live rates · Updated every hour
+      </p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {items.map(({ id, apy, tvl }) => (
           <div
@@ -28,8 +31,8 @@ function VaultStatsStrip() {
           >
             <p className="text-xs font-bold text-gray-500">{id}</p>
             <p className="mt-1 text-2xl font-black text-green-400">{apy}</p>
-            <p className="text-xs text-gray-500">30d APY</p>
-            <p className="mt-1 text-xs text-gray-600">TVL {tvl}</p>
+            <p className="text-xs text-gray-500">annual return</p>
+            <p className="mt-1 text-xs text-gray-600">{tvl} total saved</p>
           </div>
         ))}
       </div>
@@ -58,17 +61,17 @@ export default function LandingPage() {
       <section className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pb-16 pt-28 text-center">
         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-sm font-medium text-indigo-300">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" />
-          Built on YO Protocol · Base · Ethereum · Arbitrum
+          Powered by YO Protocol
         </div>
         <h1 className="text-5xl font-black leading-tight tracking-tight text-white md:text-7xl">
           Turn spare change into{" "}
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            onchain yield
+            real savings
           </span>
         </h1>
         <p className="mt-6 max-w-xl text-lg text-gray-400">
-          RoundYO rounds up your purchases and deposits the difference into live
-          YO vaults — earning real DeFi yield while you spend.
+          RoundYO rounds up your purchases and saves the difference — your money
+          earns interest automatically while you spend.
         </p>
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <Link
@@ -86,8 +89,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Live vault APY strip */}
-      <VaultStatsStrip />
+      {/* Live rates */}
+      <LiveRatesStrip />
 
       {/* How it works */}
       <section className="relative mx-auto max-w-5xl px-4 pb-24">
@@ -105,14 +108,14 @@ export default function LandingPage() {
             {
               step: "02",
               icon: "⚡",
-              title: "Deposit spare change",
-              desc: "Confirm the micro-deposit. It goes directly into a live YO vault onchain.",
+              title: "Save the spare change",
+              desc: "Confirm the micro-deposit. Your money goes into a savings account that earns interest.",
             },
             {
               step: "03",
               icon: "📈",
               title: "Watch it grow",
-              desc: "Your savings earn real DeFi yield. Withdraw anytime to your wallet.",
+              desc: "Your savings earn real interest. Withdraw anytime back to your wallet.",
             },
           ].map(({ step, icon, title, desc }) => (
             <div
@@ -138,12 +141,12 @@ export default function LandingPage() {
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {([
-              ["🔐", "Non-custodial", "You sign every transaction. Funds go directly to YO vault contracts."],
+              ["🔐", "You control your funds", "You approve every transaction. Your money goes directly into your account."],
               ["🎯", "Goal-based saving", "Set savings goals and track progress toward each one."],
-              ["💸", "Live yield", "Real DeFi APY from YO Protocol — not a mock or simulation."],
+              ["💸", "Earn while you save", "Real interest from YO Protocol — not a mock or simulation."],
               ["⚙️", "Flexible rules", "Round to the nearest $1, $5, or $10 — your choice."],
-              ["🌐", "Multi-chain", "Deposit from Base, Ethereum, or Arbitrum. YO routes automatically."],
-              ["🤝", "Social goals", "Share a goal link — friends can contribute directly to your vault position."],
+              ["🌐", "Works everywhere", "Save from Base, Ethereum, or Arbitrum. We handle the rest."],
+              ["🤝", "Social goals", "Share a goal link — friends can chip in directly to help you reach it."],
             ] as [string, string, string][]).map(([icon, title, desc]) => (
               <div key={title} className="flex gap-3">
                 <span className="text-xl">{icon}</span>

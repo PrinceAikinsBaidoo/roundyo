@@ -201,7 +201,7 @@ export default function GoalDetailPage() {
               <p className="text-sm text-gray-400 mb-4">
                 You&apos;ve saved <span className="text-white font-medium">{formatUSD(goal.currentAmount)}</span> toward this goal.
                 Deleting it only removes the tracker —{" "}
-                <span className="text-amber-300 font-medium">your funds remain safe in the YO vault</span>.
+                <span className="text-amber-300 font-medium">your savings remain safe in your account</span>.
                 You can withdraw them anytime from the{" "}
                 <Link href="/redeem" className="text-indigo-400 underline">Redeem page</Link>.
               </p>

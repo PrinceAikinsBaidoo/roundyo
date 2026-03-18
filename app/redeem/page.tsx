@@ -78,17 +78,17 @@ export default function RedeemPage() {
     <div className="mx-auto max-w-xl px-4 py-10">
       <h1 className="mb-1 text-2xl font-bold text-white">Withdraw</h1>
       <p className="mb-8 text-sm text-gray-400">
-        Redeem your vault shares back to {vault.asset}. Redemptions may take up
-        to 24h if vault liquidity is limited.
+        Withdraw your savings back to {vault.asset}. Withdrawals may take up
+        to 24 hours if funds are being rebalanced.
       </p>
 
       {/* Balance */}
       <div className="mb-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p className="text-xs text-gray-500">Your vault balance</p>
+        <p className="text-xs text-gray-500">Your savings balance</p>
         <p className="mt-1 text-2xl font-bold text-white">
           {totalSharesFormatted}
         </p>
-        <p className="text-sm text-gray-400">{vault.name} shares</p>
+        <p className="text-sm text-gray-400">in {vault.name}</p>
       </div>
 
       {/* Mode toggle */}
@@ -144,7 +144,7 @@ export default function RedeemPage() {
       {mode === "custom" && (
         <div className="mb-6">
           <label className="mb-1 block text-sm text-gray-400">
-            Shares to redeem
+            Amount to withdraw
           </label>
           <input
             type="number"
@@ -160,21 +160,21 @@ export default function RedeemPage() {
       {sharesToRedeem > 0n && (
         <div className="mb-6 rounded-2xl border border-purple-500/20 bg-purple-500/5 p-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-400">Shares to redeem</p>
+            <p className="text-sm text-gray-400">Amount to withdraw</p>
             <p className="font-semibold text-white">
               {sharesToRedeemFormatted} {vault.name}
             </p>
           </div>
           {previewFormatted && (
             <div className="mt-2 flex items-center justify-between">
-              <p className="text-xs text-gray-500">Est. assets received</p>
+              <p className="text-xs text-gray-500">You&apos;ll get back</p>
               <p className="text-xs text-gray-300">
                 {previewFormatted} {vault.asset}
               </p>
             </div>
           )}
           <p className="mt-2 text-xs text-gray-500">
-            Instant if liquidity available; otherwise up to 24h.
+            Completes instantly if funds are available, otherwise up to 24 hours.
           </p>
         </div>
       )}
@@ -191,13 +191,13 @@ export default function RedeemPage() {
           {isSuccess && !isDemo && instant !== undefined && (
             <p className="mt-2 text-sm text-gray-400">
               {instant
-                ? "✓ Instantly settled to your wallet."
-                : "⏳ Redemption queued — funds arrive within 24h."}
+                ? "✓ Done! Funds are in your wallet."
+                : "⏳ Withdrawal is processing — funds arrive within 24 hours."}
             </p>
           )}
           {isDemo && isSuccess && (
             <p className="mt-2 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400">
-              ✓ Demo redemption successful! In production this settles instantly on Base.
+              ✓ Demo withdrawal successful! In production this completes instantly.
             </p>
           )}
         </div>
@@ -213,7 +213,7 @@ export default function RedeemPage() {
           ? step === "approving"
             ? "Submitting..."
             : "Confirming..."
-          : `Redeem ${sharesToRedeemFormatted} ${vault.name}`}
+          : `Withdraw ${sharesToRedeemFormatted} ${vault.name}`}
       </button>
 
       <div className="mt-6">

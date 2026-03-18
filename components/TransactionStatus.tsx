@@ -15,12 +15,12 @@ interface Props {
 const STEP_LABELS: Record<string, string> = {
   idle: "",
   "switching-chain": "Switching network...",
-  approving: "Approving token spend...",
-  depositing: "Sending deposit...",
-  redeeming: "Sending redeem...",
+  approving: "Authorizing transfer...",
+  depositing: "Sending your deposit...",
+  redeeming: "Processing withdrawal...",
   waiting: "Waiting for confirmation...",
-  success: "Transaction confirmed!",
-  error: "Transaction failed",
+  success: "Done!",
+  error: "Something went wrong",
 };
 
 export function TransactionStatus({
@@ -73,7 +73,7 @@ export function TransactionStatus({
           rel="noopener noreferrer"
           className="mt-2 block text-xs underline opacity-70"
         >
-          Approval tx: {formatTxHash(approveHash)}
+          Authorization: {formatTxHash(approveHash)}
         </a>
       )}
       {hash && (
@@ -83,7 +83,7 @@ export function TransactionStatus({
           rel="noopener noreferrer"
           className="mt-1 block text-xs underline opacity-70"
         >
-          Tx: {formatTxHash(hash)}
+          Receipt: {formatTxHash(hash)}
         </a>
       )}
       {error && (

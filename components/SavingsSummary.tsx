@@ -40,14 +40,14 @@ export function SavingsSummary({ vaultId }: Props) {
         <p className="text-xs text-gray-500">{vault.asset}</p>
       </div>
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="text-xs text-gray-500">Vault Shares</p>
+        <p className="text-xs text-gray-500">Balance</p>
         <p className="mt-1 text-xl font-bold text-white">{shares}</p>
         <p className="text-xs text-gray-500">{vault.name}</p>
       </div>
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="text-xs text-gray-500">30d APY</p>
+        <p className="text-xs text-gray-500">Annual return</p>
         <p className="mt-1 text-xl font-bold text-green-400">{apy}</p>
-        <p className="text-xs text-gray-500">Variable</p>
+        <p className="text-xs text-gray-500">Changes over time</p>
       </div>
     </div>
   );

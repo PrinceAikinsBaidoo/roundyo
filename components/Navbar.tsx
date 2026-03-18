@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/save", label: "Save" },
   { href: "/goals", label: "Goals" },
-  { href: "/redeem", label: "Redeem" },
+  { href: "/redeem", label: "Withdraw" },
 ];
 
 export function Navbar() {

@@ -48,13 +48,13 @@ export function VaultInfoCard({ vaultId, selected, onSelect }: Props) {
 
       <div className="mt-3 flex gap-4">
         <div>
-          <p className="text-xs text-gray-500">30d APY</p>
+          <p className="text-xs text-gray-500">Annual return</p>
           <p className="text-lg font-bold text-green-400">
             {apy !== null ? `${(parseFloat(apy) * 100).toFixed(2)}%` : "—"}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500">TVL</p>
+          <p className="text-xs text-gray-500">Total saved</p>
           <p className="text-lg font-bold text-white">{tvl ?? "—"}</p>
         </div>
         <div>

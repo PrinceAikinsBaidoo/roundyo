@@ -69,7 +69,7 @@ export default function SetupPage() {
               <p className="text-4xl">👋</p>
               <h2 className="text-xl font-bold text-white">Connect your wallet</h2>
               <p className="text-sm text-gray-400">
-                RoundYO is non-custodial. You control your funds at all times.
+                You stay in complete control. Your funds are always yours.
               </p>
               <ConnectButton />
               {isConnected && (
@@ -80,9 +80,9 @@ export default function SetupPage() {
 
           {step === "vault" && (
             <div className="flex flex-col gap-4">
-              <h2 className="text-xl font-bold text-white">Choose a vault</h2>
+              <h2 className="text-xl font-bold text-white">Choose a savings account</h2>
               <p className="text-sm text-gray-400">
-                Your savings will earn yield in this YO vault.
+                Your savings will earn interest in this account.
               </p>
               <div className="flex flex-col gap-3">
                 {(Object.keys(VAULTS) as VaultId[]).map((id) => (
