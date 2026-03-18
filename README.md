@@ -15,7 +15,7 @@ RoundYO is a micro-savings app built on [YO Protocol](https://yo.xyz). Every tim
 | **Goal tracking** | Create savings goals (emergency fund, travel, etc.) and watch deposits fill your progress bar |
 | **Social goals** | Share a goal link — friends can chip in with any asset they have |
 | **Withdraw anytime** | Get your money back instantly or within 24 hours |
-| **Live rates** | Real-time annual returns and total deposits from YO Protocol |
+| **Live rates** | Real-time annual returns and total deposits from YO Protocol, auto-refreshed every 30 minutes |
 | **Multi-chain** | Base, Ethereum, Arbitrum — we handle the rest |
 | **Try Demo** | Full walletless demo mode — no funds needed, explore every flow |
 
@@ -51,7 +51,7 @@ All transactions go directly to YO Protocol contracts — no custody, no proxy.
 - **Next.js 15** (App Router, Turbopack)
 - **wagmi v2** + **RainbowKit** — wallet connection
 - **YO Protocol SDK** (`@yo-protocol/core`, `@yo-protocol/react`)
-- **TanStack Query** — data fetching / caching
+- **TanStack Query** — data fetching / caching (30-min auto-refresh)
 - **Tailwind CSS** — styling
 - **Vercel** — deployment
 
@@ -117,5 +117,10 @@ components/
 ```
 
 ---
+
+## Team
+
+- Prince Aikins-Baidoo
+- letisam-ops
 
 ## Built at the YO Hackathon · March 2026
