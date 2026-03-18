@@ -14,6 +14,8 @@ import { formatAddress, formatTokenAmount } from "@/lib/format";
 import { fetchUserHistory, VaultHistoryItem } from "@/lib/yo";
 import { useDemo } from "@/context/DemoContext";
 import { DEMO_ADDRESS, DEMO_VAULT_SHARES, DEMO_HISTORY, DEMO_GOAL } from "@/lib/demo";
+import { SavingsChart } from "@/components/SavingsChart";
+import { RoundUpChart } from "@/components/RoundUpChart";
 
 export default function DashboardPage() {
   const { address, isConnected } = useAccount();
@@ -148,6 +150,14 @@ export default function DashboardPage() {
           </Link>
         )}
       </section>
+
+      {/* Charts */}
+      {history.length > 0 && (
+        <section className="mb-5 grid gap-3 sm:grid-cols-2">
+          <SavingsChart history={history} decimals={vault.decimals} />
+          <RoundUpChart history={history} decimals={vault.decimals} />
+        </section>
+      )}
 
       {/* Recent activity */}
       <section className="mb-5">
