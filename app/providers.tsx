@@ -10,7 +10,16 @@ import { DemoProvider } from "@/context/DemoContext";
 
 import "@rainbow-me/rainbowkit/styles.css";
 
-const queryClient = new QueryClient();
+const THIRTY_MINUTES = 30 * 60 * 1000;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: THIRTY_MINUTES,
+      refetchInterval: THIRTY_MINUTES,
+    },
+  },
+});
 
 export function Providers({ children }: { children: ReactNode }) {
   return (

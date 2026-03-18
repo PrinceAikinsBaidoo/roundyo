@@ -21,7 +21,7 @@ function LiveRatesStrip() {
   return (
     <div className="mx-auto mb-16 max-w-5xl px-4">
       <p className="mb-4 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
-        Live rates · Updated every hour
+        Live rates · Updated every 30 minutes
       </p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {items.map(({ id, apy, tvl }) => (
