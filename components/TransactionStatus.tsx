@@ -23,6 +23,34 @@ const STEP_LABELS: Record<string, string> = {
   error: "Something went wrong",
 };
 
+function friendlyError(error: Error): { title: string; detail?: string } {
+  const msg = error.message?.toLowerCase() ?? "";
+
+  if (msg.includes("user rejected") || msg.includes("user denied") || msg.includes("rejected the request")) {
+    return { title: "You cancelled the transaction", detail: "No worries — nothing was sent. Try again when you're ready." };
+  }
+  if (msg.includes("insufficient funds") || msg.includes("exceeds balance")) {
+    return { title: "Not enough funds", detail: "Your wallet doesn't have enough to complete this transaction. Try a smaller amount." };
+  }
+  if (msg.includes("insufficient allowance")) {
+    return { title: "Authorization needed", detail: "You need to authorize the transfer first. Please try again." };
+  }
+  if (msg.includes("network") || msg.includes("disconnected") || msg.includes("timeout")) {
+    return { title: "Connection issue", detail: "Check your internet connection and try again." };
+  }
+  if (msg.includes("nonce") || msg.includes("replacement")) {
+    return { title: "Transaction conflict", detail: "You have a pending transaction. Wait for it to finish or speed it up in your wallet." };
+  }
+  if (msg.includes("gas") || msg.includes("fee")) {
+    return { title: "Gas fee issue", detail: "You may not have enough ETH to cover the network fee. Add a small amount of ETH and try again." };
+  }
+  if (msg.includes("reverted") || msg.includes("execution reverted")) {
+    return { title: "Transaction failed", detail: "The transaction was rejected by the network. The amount or settings may be invalid." };
+  }
+
+  return { title: "Something went wrong", detail: "Please try again. If the issue continues, refresh the page." };
+}
+
 export function TransactionStatus({
   step,
   hash,
@@ -32,6 +60,7 @@ export function TransactionStatus({
   onReset,
 }: Props) {
   const chainId = useChainId();
+  const friendly = error ? friendlyError(error) : null;
 
   if (step === "idle") return null;
 
@@ -53,7 +82,7 @@ export function TransactionStatus({
           {isSuccess && <span>✓</span>}
           {error && <span>✗</span>}
           <span className="font-medium">
-            {STEP_LABELS[step] ?? step}
+            {friendly ? friendly.title : STEP_LABELS[step] ?? step}
           </span>
         </div>
         {onReset && (isSuccess || error) && (
@@ -86,8 +115,8 @@ export function TransactionStatus({
           Receipt: {formatTxHash(hash)}
         </a>
       )}
-      {error && (
-        <p className="mt-2 text-xs opacity-70">{error.message}</p>
+      {friendly?.detail && (
+        <p className="mt-2 text-xs opacity-80">{friendly.detail}</p>
       )}
     </div>
   );

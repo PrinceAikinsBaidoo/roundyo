@@ -10,7 +10,7 @@ RoundYO is a micro-savings app built on [YO Protocol](https://yo.xyz). Every tim
 
 | Feature | Detail |
 |---|---|
-| **Round-up savings** | Enter a purchase amount → RoundYO calculates the round-up → one-click deposit |
+| **Flexible round-ups** | 6 presets ($1–$50), custom rule, or multiplier (2×–5×) — save your way |
 | **Multiple accounts** | yoUSD (USDC), yoETH (WETH), yoBTC (cbBTC), yoEUR (EURC) |
 | **Goal tracking** | Create savings goals (emergency fund, travel, etc.) and watch deposits fill your progress bar |
 | **Social goals** | Share a goal link — friends can chip in with any asset they have |
@@ -103,6 +103,7 @@ lib/
   config.ts         — Wagmi config, account registry, per-chain asset addresses
   yo.ts             — YO REST API wrappers
   goals.ts          — Goal CRUD + migration (localStorage)
+  roundUp.ts        — Flexible round-up engine (presets, custom, multipliers)
   store.ts          — User preferences (localStorage)
   demo.ts           — Demo mode mock data
 
@@ -111,7 +112,9 @@ components/
   ShareGoalModal    — Share via X, Telegram, WhatsApp, Warpcast + copy link
   VaultInfoCard     — Live rates, total deposits, risk badge
   SavingsSummary    — User balance + annual return strip
-  TransactionStatus — Step-by-step progress with block explorer links
+  TransactionStatus — Friendly error messages + block explorer links
+  SavingsChart      — Cumulative savings area chart (recharts)
+  RoundUpChart      — Per-deposit bar chart (recharts)
   NetworkGuard      — Auto-prompt to switch to supported chain
   GoalCard          — Goal progress bar card
 ```
