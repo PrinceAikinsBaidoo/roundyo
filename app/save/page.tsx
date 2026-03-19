@@ -8,7 +8,7 @@ import { TransactionStatus } from "@/components/TransactionStatus";
 import { RiskNotice } from "@/components/RiskNotice";
 import { VaultInfoCard } from "@/components/VaultInfoCard";
 import { VAULTS, VaultId, getAssetAddress, isVaultOnChain, CHAIN_NAMES, SupportedChainId } from "@/lib/config";
-import { ROUND_UP_RULES, RoundUpRule, calculateRoundUp } from "@/lib/roundUp";
+import { ROUND_UP_PRESETS, MULTIPLIER_OPTIONS, calculateRoundUp } from "@/lib/roundUp";
 import { getPrefs, savePrefs } from "@/lib/store";
 import { getGoals, updateGoalProgress, Goal } from "@/lib/goals";
 import { formatTokenAmount, toTokenUnits } from "@/lib/format";
@@ -27,29 +27,32 @@ export default function SavePage() {
   const vaultId = (prefs.selectedVaultId as VaultId) ?? "yoUSD";
   const vault = VAULTS[vaultId];
 
-  // Resolve the correct asset address for the connected chain
   const activeChainId = isDemo ? 8453 : connectedChainId;
   const assetAddress = getAssetAddress(vaultId, activeChainId) ?? vault.assetAddresses[8453];
   const vaultOnChain = isDemo || isVaultOnChain(vaultId, activeChainId);
   const chainName = CHAIN_NAMES[activeChainId as SupportedChainId] ?? "Unknown";
 
   const [purchaseAmount, setPurchaseAmount] = useState("");
-  const [rule, setRule] = useState<RoundUpRule>(prefs.roundUpRule ?? 1);
+  const [rule, setRule] = useState<number>(prefs.roundUpRule ?? 1);
+  const [customRule, setCustomRule] = useState("");
+  const [showCustomRule, setShowCustomRule] = useState(false);
+  const [multiplier, setMultiplier] = useState(1);
   const [customAmount, setCustomAmount] = useState("");
   const [mode, setMode] = useState<"roundup" | "custom">("roundup");
   const [selectedGoalId, setSelectedGoalId] = useState<string>(
     prefs.activeGoalId ?? ""
   );
 
+  const activeRule = showCustomRule ? parseFloat(customRule || "0") : rule;
+
   const roundUpAmount =
     mode === "roundup"
-      ? calculateRoundUp(parseFloat(purchaseAmount || "0"), rule)
+      ? calculateRoundUp(parseFloat(purchaseAmount || "0"), activeRule, multiplier)
       : parseFloat(customAmount || "0");
 
   const depositAmount = isNaN(roundUpAmount) ? 0 : roundUpAmount;
   const depositUnits = toTokenUnits(depositAmount, vault.decimals);
 
-  // Real hooks
   const { shares: previewShares } = usePreviewDeposit(
     vault.id,
     !isDemo && depositUnits > 0n ? depositUnits : undefined
@@ -92,10 +95,15 @@ export default function SavePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
-  function handleRuleChange(r: RoundUpRule) {
-    setRule(r);
-    savePrefs({ roundUpRule: r });
+  function handleRuleSelect(value: number) {
+    setRule(value);
+    setShowCustomRule(false);
+    savePrefs({ roundUpRule: value });
   }
+
+  // Example calculation for the helper text
+  const examplePurchase = parseFloat(purchaseAmount || "0");
+  const exampleSaved = calculateRoundUp(examplePurchase, activeRule, multiplier);
 
   if (!effectiveConnected) {
     return (
@@ -111,7 +119,7 @@ export default function SavePage() {
     <div className="mx-auto max-w-xl px-4 py-10">
       <h1 className="mb-1 text-2xl font-bold text-white">Save</h1>
       <p className="mb-8 text-sm text-gray-400">
-        Round up a purchase or enter a custom amount to save.
+        Round up a purchase or enter any amount you want to save.
       </p>
 
       {/* Mode toggle */}
@@ -133,10 +141,11 @@ export default function SavePage() {
 
       {/* Round-up mode */}
       {mode === "roundup" && (
-        <div className="mb-6 flex flex-col gap-4">
+        <div className="mb-6 flex flex-col gap-5">
+          {/* Purchase amount */}
           <div>
             <label className="mb-1 block text-sm text-gray-400">
-              Purchase amount
+              How much did you spend?
             </label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -152,17 +161,67 @@ export default function SavePage() {
             </div>
           </div>
 
+          {/* Round-up rule */}
           <div>
             <label className="mb-2 block text-sm text-gray-400">
-              Round-up rule
+              Round up to the nearest
             </label>
-            <div className="flex gap-2">
-              {ROUND_UP_RULES.map(({ label, value }) => (
+            <div className="flex flex-wrap gap-2">
+              {ROUND_UP_PRESETS.map(({ label, value }) => (
                 <button
                   key={value}
-                  onClick={() => handleRuleChange(value)}
+                  onClick={() => handleRuleSelect(value)}
+                  className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
+                    !showCustomRule && rule === value
+                      ? "border-indigo-500 bg-indigo-500/10 text-white"
+                      : "border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+              <button
+                onClick={() => setShowCustomRule(true)}
+                className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
+                  showCustomRule
+                    ? "border-indigo-500 bg-indigo-500/10 text-white"
+                    : "border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                Custom
+              </button>
+            </div>
+
+            {/* Custom rule input */}
+            {showCustomRule && (
+              <div className="mt-3 relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  $
+                </span>
+                <input
+                  type="number"
+                  placeholder="e.g. 25"
+                  value={customRule}
+                  onChange={(e) => setCustomRule(e.target.value)}
+                  className="w-full rounded-xl border border-indigo-500/30 bg-white/5 py-2.5 pl-8 pr-4 text-white placeholder-gray-600 focus:border-indigo-500 focus:outline-none"
+                  autoFocus
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Multiplier */}
+          <div>
+            <label className="mb-2 block text-sm text-gray-400">
+              Save extra? Multiply your round-up
+            </label>
+            <div className="flex gap-2">
+              {MULTIPLIER_OPTIONS.map(({ label, value }) => (
+                <button
+                  key={value}
+                  onClick={() => setMultiplier(value)}
                   className={`flex-1 rounded-xl border py-2 text-sm font-medium transition-all ${
-                    rule === value
+                    multiplier === value
                       ? "border-indigo-500 bg-indigo-500/10 text-white"
                       : "border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
                   }`}
@@ -172,6 +231,19 @@ export default function SavePage() {
               ))}
             </div>
           </div>
+
+          {/* Live preview */}
+          {examplePurchase > 0 && exampleSaved > 0 && (
+            <div className="rounded-xl bg-white/5 px-4 py-3 text-sm text-gray-300">
+              <span className="text-white font-medium">${examplePurchase.toFixed(2)}</span> purchase → round up to{" "}
+              <span className="text-white font-medium">${(examplePurchase + exampleSaved / multiplier).toFixed(2)}</span>
+              {multiplier > 1 && (
+                <span> × {multiplier}</span>
+              )}
+              {" "}→ save{" "}
+              <span className="text-green-400 font-bold">${exampleSaved.toFixed(2)}</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -179,7 +251,7 @@ export default function SavePage() {
       {mode === "custom" && (
         <div className="mb-6">
           <label className="mb-1 block text-sm text-gray-400">
-            Amount to deposit
+            How much would you like to save?
           </label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -193,6 +265,22 @@ export default function SavePage() {
               className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-8 pr-4 text-white placeholder-gray-600 focus:border-indigo-500 focus:outline-none"
             />
           </div>
+          {/* Quick amount buttons */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {[1, 5, 10, 25, 50, 100].map((amt) => (
+              <button
+                key={amt}
+                onClick={() => setCustomAmount(String(amt))}
+                className={`rounded-xl border px-3 py-1.5 text-xs font-medium transition-all ${
+                  customAmount === String(amt)
+                    ? "border-indigo-500 bg-indigo-500/10 text-white"
+                    : "border-white/10 text-gray-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                ${amt}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -200,7 +288,7 @@ export default function SavePage() {
       {depositAmount > 0 && (
         <div className="mb-6 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-400">Amount to deposit</p>
+            <p className="text-sm text-gray-400">Amount to save</p>
             <p className="text-lg font-bold text-white">
               ${depositAmount.toFixed(2)} {vault.asset}
             </p>
@@ -222,7 +310,7 @@ export default function SavePage() {
             </div>
           )}
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-xs text-gray-500">Vault</p>
+            <p className="text-xs text-gray-500">Account</p>
             <p className="text-xs text-gray-300">
               {vault.name} · {vault.asset}
             </p>
@@ -256,13 +344,13 @@ export default function SavePage() {
         <VaultInfoCard vaultId={vaultId} selected />
       </div>
 
-      {/* Chain badge + vault compatibility warning */}
+      {/* Chain badge */}
       {!isDemo && (
         <div className="mb-4">
           {vaultOnChain ? (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400" />
-              Depositing {vault.asset} on <span className="text-gray-300">{chainName}</span>
+              Saving {vault.asset} on <span className="text-gray-300">{chainName}</span>
             </div>
           ) : (
             <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
@@ -298,10 +386,10 @@ export default function SavePage() {
       >
         {isLoading
           ? step === "approving"
-            ? "Approving..."
+            ? "Authorizing..."
             : "Confirming..."
           : depositAmount > 0
-          ? `Deposit $${depositAmount.toFixed(2)} ${vault.asset}`
+          ? `Save $${depositAmount.toFixed(2)}`
           : "Enter an amount"}
       </button>
 

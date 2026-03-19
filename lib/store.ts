@@ -4,7 +4,7 @@
 
 export interface UserPrefs {
   selectedVaultId: string;
-  roundUpRule: 1 | 5 | 10;
+  roundUpRule: number;
   activeGoalId: string | null;
   onboardingComplete: boolean;
 }
